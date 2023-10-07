@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f1f1f1;
+            transition: background-color 0.5s ease-in-out;
+        }
+        
+        #todo-container {
+            max-width: 400px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        #todo-header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        #todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .task.completed {
+            background-color: #ecf0f1;
+            text-decoration: line-through;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #new-task-input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: none;
+            border-bottom: 1px solid #bdc3c7;
+            outline: none;
+        }
+        
+        #new-task-form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        #background-options {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .background-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="todo-container">
+        <div id="todo-header">
+            <h1>To-Do List</h1>
+        </div>
+        <ul id="todo-list"></ul>
+        <form id="new-task-form">
+            <input type="text" id="new-task-input" placeholder="Add a new task..." autocomplete="off">
+            <button type="button" onclick="addTask()">Add</button>
+        </form>
+        <div id="background-options">
+            <div class="background-option" style="background-color: #f1f1f1" onclick="changeBackground('#f1f1f1')"></div>
+            <div class="background-option" style="background-color: #e74c3c" onclick="changeBackground('#e74c3c')"></div>
+            <div class="background-option" style="background-color: #27ae60" onclick="changeBackground('#27ae60')"></div>
+            <div class="background-option" style="background-color: #3498db" onclick="changeBackground('#3498db')"></div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = [];
+        let currentBackground = '#f1f1f1';
+
+        function renderTasks() {
+            const todoList = document.getElementById('todo-list');
+            todoList.innerHTML = '';
+
+            tasks.forEach((task, index) => {
+                const taskElement = document.createElement('li');
+                taskElement.classList.add('task');
+                if (task.completed) {
+                    taskElement.classList.add('completed');
+                }
+
+                taskElement.innerHTML = `
+                <span>${task.text}</span>
+                <div class="task-actions">
+                    <button onclick="toggleTask(${index})">${task.completed ? 'Undo' : 'Complete'}</button>
+                    <button onclick="deleteTask(${index})">Delete</button>
+                </div>
+            `;
+
+                todoList.appendChild(taskElement);
+            });
+        }
+
+        function addTask() {
+            const newTaskInput = document.getElementById('new-task-input');
+            const text = newTaskInput.value.trim();
+
+            if (text !== '') {
+                tasks.push({
+                    text,
+                    completed: false
+                });
+                newTaskInput.value = '';
+                renderTasks();
+            }
+        }
+
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            renderTasks();
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            renderTasks();
+        }
+
+        function changeBackground(color) {
+            document.body.style.backgroundColor = color;
+            currentBackground = color;
+        }
+
+        // Initial render
+        renderTasks();
+        changeBackground(currentBackground);
+    </script>
+
+</body>
+
+</html>
